@@ -2,7 +2,6 @@ import pandas as pd
 import math
 import statistics
 from statistics import mode
-import numpy as np
 
 
 def eucledian_distance(x, y):
