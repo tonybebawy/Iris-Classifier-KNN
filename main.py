@@ -4,11 +4,13 @@ import statistics
 from statistics import mode
 
 
-def eucledian_distance(x, y):
+def eucledian_distance(x, y, z, j):
     dx = x[0] - x[1]
     dy = y[0] - y[1]
-    return math.sqrt(dx**2 + dy**2)
+    dz = z[0] - z[1]
+    dj = j[0] - j[1]
 
+    return math.sqrt(dx**2 + dy**2 + dz**2 + dj**2)
 
 data_file = 'Iris.csv'
 df = pd.read_csv(data_file)
@@ -23,31 +25,35 @@ k = 10
 
 correct_count = 0
 for test_index, test_row in test_data.iterrows():
-    x1 = test_row["SepalLengthCm"]/test_row["SepalWidthCm"]
-    y1 = test_row["PetalLengthCm"]/test_row["PetalWidthCm"]
+    x1 = test_row["SepalLengthCm"]
+    y1 = test_row["PetalLengthCm"]
+    z1 = test_row["SepalWidthCm"]
+    j1 = test_row["PetalWidthCm"]
 
     neighbors = {}
 
     for index, row in train_data.iterrows():
-        x2 = row["SepalLengthCm"]/row["SepalWidthCm"]
-        y2 = row["PetalLengthCm"]/row['PetalWidthCm']
+        x2 = row["SepalLengthCm"]
+        y2 = row["PetalLengthCm"]
+        z2 = row["SepalWidthCm"]
+        j2 = row['PetalWidthCm']
 
         x = (x1, x2)
         y = (y1, y2)
+        z = (z1, z2)
+        j = (j1, j2)
 
         # computing the eucledian distance
-        distance = eucledian_distance(x, y)
+        distance = eucledian_distance(x, y, z, j)
         neighbors[distance] = row["Species"]
-
     top_k = []
 
     count = 0
-    for key in sorted(neighbors.keys()):
-        if count == k:
-            break
-        top_k.append(neighbors[key])
-        count += 1
 
+    for key in sorted(neighbors.keys()):
+        if len(top_k) != k:
+            top_k.append(neighbors[key])
+    # print(top_k)
     prediction = ''
     try:
         prediction = mode(top_k)
